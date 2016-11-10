@@ -17,41 +17,41 @@
 
 window.findNRooksSolution = function(n) {
 
-  var solution = [];
+//   var solution = [];
 
-  var newBoard = new Board ({n: n});
+//   var newBoard = new Board ({n: n});
 
-  var findNRooks = function (board) {
-    // base case
-    if (!board.hasAnyRowConflicts() && !board.hasAnyColConflicts()) {
-      if (board.numPlayers() === n) {
-        var copyBoard = [];
+//   var findNRooks = function (board) {
+//     // base case
+//     if (!board.hasAnyRowConflicts() && !board.hasAnyColConflicts()) {
+//       if (board.numPlayers() === n) {
+//         var copyBoard = [];
 
-        for (var i = 0; i < board.rows().length; i++) {
-          copyBoard.push(board.rows()[i].slice());
-        }
-        solution = copyBoard;
-      }
-    } else {
-      return;
-    }
+//         for (var i = 0; i < board.rows().length; i++) {
+//           copyBoard.push(board.rows()[i].slice());
+//         }
+//         solution = copyBoard;
+//       }
+//     } else {
+//       return;
+//     }
 
-    //recursive case
-    for (var row = 0; row < n; row++) {
-      for (var col = 0; col < n; col++) {
-        if (board.rows()[row][col] === 1) {
-          continue;
-        }
-        board.togglePiece(row, col);
-        findNRooks(board);
-        board.togglePiece(row, col);
-      }
-    }
-  };
+//     //recursive case
+//     for (var row = 0; row < n; row++) {
+//       for (var col = 0; col < n; col++) {
+//         if (board.rows()[row][col] === 1) {
+//           continue;
+//         }
+//         board.togglePiece(row, col);
+//         findNRooks(board);
+//         board.togglePiece(row, col);
+//       }
+//     }
+//   };
 
-  findNRooks(newBoard);
-  console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
-  return solution;
+//   findNRooks(newBoard);
+//   console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
+//   return solution;
 };
 
 // return the number of nxn chessboards that exist, with n rooks placed such that none of them can attack each other
@@ -61,7 +61,10 @@ window.countNRooksSolutions = function(n) {
 
   var newBoard = new Board ({n: n});
 
-  var findNRooks = function (board) {
+  var findNRooks = function (board, row, col) {
+
+    row = row || 0;
+    col = col || 0;
     // base case
     if (!board.hasAnyRowConflicts() && !board.hasAnyColConflicts()) {
       if (board.numPlayers() === n) {
@@ -70,26 +73,30 @@ window.countNRooksSolutions = function(n) {
         for (var i = 0; i < board.rows().length; i++) {
           copyBoard.push(board.rows()[i].slice());
         }
-        solution.push(copyBoard);
+        if (solutionObj[copyBoard] === undefined) {
+          solutionObj[copyBoard] = copyBoard;
+          solution.push(copyBoard);
+        }
       }
     } else {
       return;
     }
-
+    debugger;
     //recursive case
-    for (var row = 0; row < n; row++) {
-      for (var col = 0; col < n; col++) {
+    for (; row < n; row++) {
+      for (; col < n; col++) {
         if (board.rows()[row][col] === 1) {
           continue;
         }
         board.togglePiece(row, col);
-        findNRooks(board);
+        findNRooks(board, row, col);
         board.togglePiece(row, col);
       }
     }
   };
 
   findNRooks(newBoard);
+  console.log(solution.length)
   console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
   return solution;
 };
